@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block start %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.0.0/css/font-awesome.css" integrity="sha512-72McA95q/YhjwmWFMGe8RI3aZIMCTJWPBbV8iQY3jy1z9+bi6+jHnERuNrDPo/WGYEzzNs4WdHNyyEr/yXJ9pA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<h1>Expense Tracker</h1>
+<div class="container">
+  <div class="header">
+    <img
+      src="https://i.ibb.co/jfScDTC/budget.png"
+      alt="Expense Tracker"
+    />
+    <div class="balance-container">
+      <h2>Your Balance</h2>
+      <h2 id="balance" class="balance">${{balance}}</h2>
+    </div>
+  </div>
+  <div class="inc-exp-container">
+    <div>
+      <h4>Income</h4>
+      <p id="money-plus" class="money plus">$+{{income}}</p>
+    </div>
+    <div>
+      <h4>Expenses</h4>
+      <p id="money-minus" class="money minus">${{expense}}</p>
+    </div>
+  </div>
+  <h3>History</h3>
+
+<ul id="list" class="list">
+  {% for t in transections %}
+    <li class="{% if t.isNegative %} minus {% else %} plus {% endif %}">
+      {{t.discription}} <span>{{t.ammount}}</span>
+      <a href="{% url 'deleteHistory' t.uuid %}"  class="delete-btn" onclick="removeTransaction(1)"><i class="fa fa-times"></i></a>
+    </li>
+  {% endfor %}
+</ul>
+
+
+  <h3>Add new transaction</h3>
+  <form id="form" method="POST">
+    {% csrf_token %}
+    <div class="form-control">
+      <label for="text">Description</label>
+      <input name="description" type="text" id="text" placeholder="Enter description..." />
+    </div>
+    <div class="form-control">
+      <label for="amount"
+        >Amount <br />
+        <small>(-100 = expense, 100 = income)</small></label
+      >
+      <input name="ammount" type="number" id="amount" placeholder="Enter amount..." />
+    </div>
+    <button class="btn">Add transaction</button>
+  </form>
+</div>
+<!-- Notification -->
+<div class="notification-container" id="notification">
+  <p>Please add a description and amount</p>
+</div>
+
+
+{% if messages %}
+
+{% for message in messages %}
+<script>
+  alert("{{ message }}")
+</script>
+{% endfor %}
+{% endif %}
+
+{% endblock  %}
